@@ -2,12 +2,12 @@
 // https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php
 var earthquakesLink = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
 // https://github.com/fraxen/tectonicplates/blob/master/GeoJSON/PB2002_boundaries.json
-var tetonicplatesLink = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json";
+var tectonicplatesLink = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json";
 
 
-// create layergroups for earthquakes and tetonicplates
+// create layergroups for earthquakes and tectonicplates
 var earthquakes = new L.layerGroup();
-var tetonicplates = new L.layerGroup();
+var tectonicplates = new L.layerGroup();
 
 // Adding tile layers
 // https://docs.mapbox.com/api/maps/styles/#mapbox-styles
@@ -48,7 +48,7 @@ var baseMaps = {
 
 var overlayMaps = {
     "Earthquakes": earthquakes,
-    "Tetonic Plates": tetonicplates
+    "Tectonic Plates": tectonicplates
 }
 
 // create myMap object with 0,0 location for center and minimum zoom (0)
@@ -126,34 +126,36 @@ function getDataEarthquakes(earthquakeData) {
     }).addTo(earthquakes);
     earthquakes.addTo(myMap);
 
-    // repeat above process to return tetonic plate geometry
+    // repeat above process to return tectonic plate geometry
 // Perform a GET request to the query URL
-d3.json(tetonicplatesLink).then(function(dataTetonic) {
+d3.json(tectonicplatesLink).then(function(dataTectonic) {
     // Once we get a response, send the data.features object to the getDataEarthquakes function
-      getDataTetonic(dataTetonic.features);
+      getDataTectonic(dataTectonic.features);
     });
 
-function getDataTetonic(tetonicplatesData) {
-        L.geoJSON(tetonicplatesData, {
+function getDataTectonic(tectonicplatesData) {
+        L.geoJSON(tectonicplatesData, {
             color: "#ffa500",
             weight: 2,
             opacity: 1
-        }).addTo(tetonicplates);
-        tetonicplates.addTo(myMap);
+        }).addTo(tectonicplates);
+        tectonicplates.addTo(myMap);
     }
 
 // Set up legend
+// https://www.igismap.com/legend-in-leafletjs-map-with-topojson/
+// As per article, need to also amend the CSS with the different tags
 var legend = L.control({ position: "bottomright" });
     legend.onAdd = function() {
         var div = L.DomUtil.create("div", "info legend"), 
-        magnitudeLevels = [0, 1, 2, 3, 4, 5];
+        magnitudes = [0, 1, 2, 3, 4, 5];
 
-        div.innerHTML += "<h3>Magnitude</h3>"
+        div.innerHTML += "<h3>Magnitude: </h3><hr>"
 
-        for (var i = 0; i < magnitudeLevels.length; i++) {
+        for (var i = 0; i < magnitudes.length; i++) {
             div.innerHTML +=
-                '<i style="background: ' + chooseColor(magnitudeLevels[i] + 1) + '"></i> ' +
-                magnitudeLevels[i] + (magnitudeLevels[i + 1] ? '&ndash;' + magnitudeLevels[i + 1] + '<br>' : '+');
+                '<i style="background:' + chooseColor(magnitudes[i] + 1) + '"></i>' +
+                magnitudes[i] + (magnitudes[i + 1] ? '&ndash;' + magnitudes[i + 1] + '<br>' : '+');
         }
         return div;
     };
