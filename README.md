@@ -9,9 +9,10 @@ Welcome to the United States Geological Survey, or USGS for short! The USGS is r
 The USGS is interested in building a new set of tools that will allow them visualize their earthquake data. They collect a massive amount of data from all over the world each day, but they lack a meaningful way of displaying it. Their hope is that being able to visualize their data will allow them to better educate the public and other government organizations (and hopefully secure more funding..) on issues facing our planet.
 
 ## Datasets
-Source | Link
-USGS GeoJSON Summary Feed, *Past 7 Days - All Earthquakes* | https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php
-Tectonic Plates | https://github.com/fraxen/tectonicplates/blob/master/GeoJSON/PB2002_boundaries.json
+|Source|Link|
+|-|-|
+|USGS GeoJSON Summary Feed, *Past 7 Days - All Earthquakes*|https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php|
+|Tectonic Plates|https://github.com/fraxen/tectonicplates/blob/master/GeoJSON/PB2002_boundaries.json|
 
 ## Process:
 ##### 1. Get the Dataset:
@@ -24,9 +25,9 @@ Tectonic Plates | https://github.com/fraxen/tectonicplates/blob/master/GeoJSON/P
 ##### 2. Create the Visualisations:
 ###### Default Visualisation including Tectonic Plate lines:
 ![Initial Visualisation](https://github.com/EpicTomatoSauce/leaflet-challenge/blob/main/Images/Viz%201%20-%20Satellite.png?raw=true)
-###### Light Theme with Expanded Layer Control
+###### Light Theme with Expanded Layer Control:
 ![Initial Visualisation](https://github.com/EpicTomatoSauce/leaflet-challenge/blob/main/Images/Viz%202%20-%20Light%20with%20Expanded%20Layers.png?raw=true)
-###### Popups
+###### Popups:
 ![Initial Visualisation](https://github.com/EpicTomatoSauce/leaflet-challenge/blob/main/Images/Viz%203%20-%20Popups.png?raw=true)
 
 ## Created by:
