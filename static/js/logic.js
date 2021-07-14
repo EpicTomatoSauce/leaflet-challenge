@@ -1,8 +1,8 @@
  // JSON data locations:
 // https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php
-var earthquakesLink = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson"
+var earthquakesLink = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
 // https://github.com/fraxen/tectonicplates/blob/master/GeoJSON/PB2002_boundaries.json
-var tetonicplatesLink = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json"
+var tetonicplatesLink = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json";
 
 
 // create layergroups for earthquakes and tetonicplates
@@ -65,27 +65,21 @@ L.control.layers(baseMaps, overlayMaps, {
   }).addTo(myMap);
 
 // Use USGS website to retrieve earthquake information using d3.json
-d3.json(earthquakesLink, function(earthquakeData) {
+// Perform a GET request to the query URL
+d3.json(earthquakesLink).then(function(dataEarthquakes) {
+    // Once we get a response, send the data.features object to the getDataEarthquakes function
+      getDataEarthquakes(dataEarthquakes.features);
+    });
+
+function getDataEarthquakes(earthquakeData) {
     // create a function for marker size based on the magnitude information in the earthquakeData
     function markersize(magnitude) {
-        if (magnitude === 0) {
-            return 1;
+        if (magnitude == 0) {
+            return 0.1;
         }
-        return magnitude * 2;
+        return magnitude * 3;
     }
-    function styledata (feature) {
-        return {
-            opacity: 1.0,
-            fillOpacity: 0.8,
-            // base the fill color of magnitude size, of which then create a function called chooseColor to determine based on an integer scale
-            fillColor: chooseColor(feature.properties.mag),
-            color: "#000000",
-            // use the marker size function to determine size of the radius based on the feature.properties.mag property
-            radius: markersize(feature.properties.mag),
-            stroke: true,
-            weight: 0.3
-        };
-    }
+
     function chooseColor(magnitude) {
         // use switch to determine treatment of the magnitude against an integer scale
         switch (true) {
@@ -103,6 +97,20 @@ d3.json(earthquakesLink, function(earthquakeData) {
                 return "#b7f34b";
         }  
     }
+    
+    function styledata (feature) {
+        return {
+            opacity: 1.0,
+            fillOpacity: 0.8,
+            // base the fill color of magnitude size, of which then create a function called chooseColor to determine based on an integer scale
+            fillColor: chooseColor(feature.properties.mag),
+            color: "#000000",
+            // use the marker size function to determine size of the radius based on the feature.properties.mag property
+            radius: markersize(feature.properties.mag),
+            stroke: true,
+            weight: 0.3
+        };
+    }
 
     L.geoJSON(earthquakeData, {
         // https://leafletjs.com/examples/geojson/
@@ -119,12 +127,36 @@ d3.json(earthquakesLink, function(earthquakeData) {
     earthquakes.addTo(myMap);
 
     // repeat above process to return tetonic plate geometry
-    d3.json(tetonicplatesLink, function(tetonicplatesData) {
+// Perform a GET request to the query URL
+d3.json(tetonicplatesLink).then(function(dataTetonic) {
+    // Once we get a response, send the data.features object to the getDataEarthquakes function
+      getDataTetonic(dataTetonic.features);
+    });
+
+function getDataTetonic(tetonicplatesData) {
         L.geoJSON(tetonicplatesData, {
             color: "#ffa500",
             weight: 2,
             opacity: 1
         }).addTo(tetonicplates);
         tetonicplates.addTo(myMap);
-    })
-})
+    }
+
+// Set up legend
+var legend = L.control({ position: "bottomright" });
+    legend.onAdd = function() {
+        var div = L.DomUtil.create("div", "info legend"), 
+        magnitudeLevels = [0, 1, 2, 3, 4, 5];
+
+        div.innerHTML += "<h3>Magnitude</h3>"
+
+        for (var i = 0; i < magnitudeLevels.length; i++) {
+            div.innerHTML +=
+                '<i style="background: ' + chooseColor(magnitudeLevels[i] + 1) + '"></i> ' +
+                magnitudeLevels[i] + (magnitudeLevels[i + 1] ? '&ndash;' + magnitudeLevels[i + 1] + '<br>' : '+');
+        }
+        return div;
+    };
+    // Add Legend to the Map
+    legend.addTo(myMap);
+}
